@@ -52,14 +52,14 @@ public class IrmaService {
 
 	@PostConstruct
 	public void init() throws InvalidKeySpecException, NoSuchAlgorithmException, IOException {
-		Assert.isTrue(StringUtils.isNotEmpty(irmaConfiguration.getJwtPublicKey()) || StringUtils.isNotEmpty(irmaConfiguration.getJwtPublicKeyFile()), "The value for irma.server.jwtPublicKey or irma.server.jwtPublicKeyFile needs to be configured");
+		Assert.isTrue(StringUtils.isNotEmpty(irmaConfiguration.getJwtPublicKey()), "The value for irma.server.jwtPublicKey needs to be configured");
 		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 		publicKey = (RSAPublicKey) keyFactory.generatePublic(new X509EncodedKeySpec(getPublicKey()));
 		LOG.info(String.format("The JWT validation public key is configured correctly, the public key is:\n%s", PemUtils.formatPublicKey(publicKey)));
 	}
 
 	private byte[] getPublicKey() throws IOException {
-		return PemUtils.readPemKeyFromFileOrValue(irmaConfiguration.getJwtPublicKeyFile(), irmaConfiguration.getJwtPublicKey());
+		return PemUtils.readPemKeyFromFileOrValue(irmaConfiguration.getJwtPublicKey());
 	}
 
 	public String endSession(String resultJwt, String attribute) throws JoseException, JsonProcessingException {

@@ -11,8 +11,6 @@ import org.springframework.context.annotation.Configuration;
 public class ServerConfiguration {
 	private String jwtPublicKey;
 	private String jwtPrivateKey;
-	private String jwtPublicKeyFile;
-	private String jwtPrivateKeyFile;
 	private String issuer;
 
 	public String getIssuer() {
@@ -31,14 +29,6 @@ public class ServerConfiguration {
 		this.jwtPrivateKey = jwtPrivateKey;
 	}
 
-	public String getJwtPrivateKeyFile() {
-		return jwtPrivateKeyFile;
-	}
-
-	public void setJwtPrivateKeyFile(String jwtPrivateKeyFile) {
-		this.jwtPrivateKeyFile = jwtPrivateKeyFile;
-	}
-
 	public String getJwtPublicKey() {
 		return jwtPublicKey;
 	}
@@ -47,11 +37,4 @@ public class ServerConfiguration {
 		this.jwtPublicKey = jwtPublicKey;
 	}
 
-	public String getJwtPublicKeyFile() {
-		return jwtPublicKeyFile;
-	}
-
-	public void setJwtPublicKeyFile(String jwtPublicKeyFile) {
-		this.jwtPublicKeyFile = jwtPublicKeyFile;
-	}
 }

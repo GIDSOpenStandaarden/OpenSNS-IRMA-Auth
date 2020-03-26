@@ -74,9 +74,10 @@ Please see the  [kubernetes](./kubernetes) directory for the example scripts.
 | Variable | default | remark |
 | ---: | --- | :--- |
 | IRMA_SERVER_URL               |        | The URL of the IRMA server. |
-| IRMA_SERVER_JWTPUBLICKEYFILE  |        | The public key of the IRMA server. |
+| IRMA_SERVER_JWTPUBLICKEY      |        | The public key of the IRMA server. The value can be a PEM encoded string or file. |
 | IRMA_SERVER_ISSUER            | testsp | The API client access token of the IRMA server.  |
 | IRMA_SERVER_TOKEN             |        | The API client access token of the IRMA server.  |
-| GIDS_SERVER_JWTPUBLICKEYFILE  |  \[generated if absent] | Optional method of referring to a public key file added to the container. |
-| GIDS_SERVER_JWTPRIVATEKEYFILE  | \[generated if absent]  | If GIDS_SERVER_JWTPRIVATEKEY and GIDS_SERVER_JWTPRIVATEKEYFILE are not set or not persent, the container will generate a keypair on startup. |
+| GIDS_SERVER_JWTPUBLICKEY      | \[generated if absent]* | The public key of the GIDS server, used for JWT signing. The value can be a PEM encoded string or file. |
+| GIDS_SERVER_JWTPRIVATEKEY     | \[generated if absent]* | The private key of the GIDS server, used for JWT signing. The value can be a PEM encoded string or file. |
  
+\* If both values for GIDS_SERVER_JWTPUBLICKEY and GIDS_SERVER_JWTPRIVATEKEY are absent, a keypair will be generated as startup.

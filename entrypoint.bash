@@ -23,20 +23,23 @@ function check_file {
 check_variable "IRMA_SERVER_URL"
 check_variable "IRMA_SERVER_TOKEN"
 
-## Check if there is a private key file added to the container and set in GIDS_SERVER_JWTPRIVATEKEYFILE.
-if [ ! -s "$GIDS_SERVER_JWTPRIVATEKEYFILE" ] && [ -z "$GIDS_SERVER_JWTPRIVATEKEY" ]; then
-  echo "Generating keypair becasue both envorionment variables GIDS_SERVER_JWTPRIVATEKEY and GIDS_SERVER_JWTPRIVATEKEYFILE are not set"
-  bash /tools/keygen.sh "$GIDS_SERVER_JWTPUBLICKEYFILE" "$GIDS_SERVER_JWTPRIVATEKEYFILE"
+## Check if there is a value key present in GIDS_SERVER_JWTPRIVATEKEY or GIDS_SERVER_JWTPUBLICKEY.
+if [ -z "${GIDS_SERVER_JWTPRIVATEKEY}" ] && [ -z "${GIDS_SERVER_JWTPUBLICKEY}" ]; then
+  echo "Generating new keypair"
+  export GIDS_SERVER_JWTPUBLICKEY=/keys/gids_public_key.pem
+  export GIDS_SERVER_JWTPRIVATEKEY=/keys/gids_private_key.pem
+  bash /tools/keygen.sh "${GIDS_SERVER_JWTPUBLICKEY}" "${GIDS_SERVER_JWTPRIVATEKEY}"
 fi
 
-if [ -s "$GIDS_SERVER_JWTPUBLICKEYFILE" ]; then
+if [ -s "${GIDS_SERVER_JWTPUBLICKEY}" ]; then
   # Note that the public key file is only used for logging here, the server does not need one.
+  echo "The public key is set to ${GIDS_SERVER_JWTPUBLICKEY}"
+  cat "${GIDS_SERVER_JWTPUBLICKEY}"
+  echo ""
+elif [ ! -z "${GIDS_SERVER_JWTPUBLICKEY}" ]; then
   echo "The public key is set to:"
-  cat "$GIDS_SERVER_JWTPUBLICKEYFILE"
+  echo "${GIDS_SERVER_JWTPUBLICKEY}"
   echo ""
 fi
-
-
-
 
 java -jar /gids-irma-auth.jar

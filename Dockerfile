@@ -13,7 +13,4 @@ RUN chmod +x entrypoint.bash
 
 EXPOSE 8080
 
-ENV GIDS_SERVER_JWTPUBLICKEYFILE=/keys/gids_public_key.pem
-ENV GIDS_SERVER_JWTPRIVATEKEYFILE=/keys/gids_private_key.pem
-
-ENTRYPOINT ["bash", "entrypoint.bash" ]
+ENTRYPOINT [ "bash", "entrypoint.bash" ]

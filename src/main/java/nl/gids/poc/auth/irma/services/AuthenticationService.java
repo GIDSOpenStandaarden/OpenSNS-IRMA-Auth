@@ -13,7 +13,9 @@ import org.springframework.util.Assert;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.security.*;
+import java.security.GeneralSecurityException;
+import java.security.KeyFactory;
+import java.security.Signature;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -46,8 +48,8 @@ public class AuthenticationService {
 
 	@PostConstruct
 	public void init() throws Exception {
-		Assert.isTrue(StringUtils.isNotEmpty(serverConfiguration.getJwtPublicKey()) || StringUtils.isNotEmpty(serverConfiguration.getJwtPublicKeyFile()), "The value for gids.server.jwtPublicKey or gids.server.jwtPublicKeyFile needs to be configured");
-		Assert.isTrue(StringUtils.isNotEmpty(serverConfiguration.getJwtPrivateKey()) || StringUtils.isNotEmpty(serverConfiguration.getJwtPrivateKeyFile()), "The value for gids.server.jwtPrivateKey or gids.server.jwtPrivateKeyFile needs to be configured");
+		Assert.isTrue(StringUtils.isNotEmpty(serverConfiguration.getJwtPublicKey()), "The value for gids.server.jwtPublicKeyneeds to be configured.");
+		Assert.isTrue(StringUtils.isNotEmpty(serverConfiguration.getJwtPrivateKey()), "The value for gids.server.jwtPrivateKey needs to be configured.");
 		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 		publicKey = (RSAPublicKey) keyFactory.generatePublic(new X509EncodedKeySpec(getPublicKey()));
 		privateKey = (RSAPrivateKey) keyFactory.generatePrivate(new PKCS8EncodedKeySpec(getPrivateKey()));
@@ -55,11 +57,11 @@ public class AuthenticationService {
 	}
 
 	private byte[] getPublicKey() throws IOException {
-		return PemUtils.readPemKeyFromFileOrValue(serverConfiguration.getJwtPublicKeyFile(), serverConfiguration.getJwtPublicKey());
+		return PemUtils.readPemKeyFromFileOrValue(serverConfiguration.getJwtPublicKey());
 	}
 
 	private byte[] getPrivateKey() throws IOException {
-		return PemUtils.readPemKeyFromFileOrValue(serverConfiguration.getJwtPrivateKeyFile(), serverConfiguration.getJwtPrivateKey());
+		return PemUtils.readPemKeyFromFileOrValue(serverConfiguration.getJwtPrivateKey());
 	}
 
 	private void validate(RSAPublicKey publicKey, RSAPrivateKey privateKey) throws GeneralSecurityException {
