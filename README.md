@@ -63,9 +63,6 @@ docker run -p 8080:8080 --name irma_server irma_server
 mvn --quiet clean install && docker-compose build && docker-compose up
 ```
 
-## Running on kubernetes
-Please see the  [kubernetes](./kubernetes) directory for the example scripts.
-
 # Configuration
 
 ## Environment variables
