@@ -34,12 +34,12 @@ Edit the .env file and add the following values
 
        IRMA_SERVER_TOKEN=f1aa25cd6fc...
 
-1. IRMA_SERVER_JWTPUBLICKEYFILE, the JWT public key from your irma server. Make sure the file ends with
+1. IRMA_SERVER_JWTPUBLICKEY, the JWT public key from your irma server. Make sure the file ends with
 .pem and is located in the /keys folder. The format must be pem (-----BEGIN PUBLIC KEY----- ... -----END PUBLIC KEY-----)
 
-       IRMA_SERVER_JWTPUBLICKEYFILE=/keys/mypublickeyfrommyirmaserver.pem
+       IRMA_SERVER_JWTPUBLICKEY=/keys/mypublickeyfrommyirmaserver.pem
 
-1. GIDS_SERVER_JWTPUBLICKEYFILE/GIDS_SERVER_JWTPRIVATEKEYFILE. Generate a keypair in the root directory by running:
+1. GIDS_SERVER_JWTPUBLICKEY/GIDS_SERVER_JWTPRIVATEKEY. Generate a keypair in the root directory by running:
         
         cd keys
         ../tools/keygen.sh
@@ -47,8 +47,8 @@ Edit the .env file and add the following values
         
    and make sure to add the following environment variables:
    
-        GIDS_SERVER_JWTPUBLICKEYFILE=/keys/gids_public_key.pem
-        GIDS_SERVER_JWTPRIVATEKEYFILE=/keys/gids_private_key.pem
+        GIDS_SERVER_JWTPUBLICKEY=/keys/gids_public_key.pem
+        GIDS_SERVER_JWTPRIVATEKEY=/keys/gids_private_key.pem
         
 
 ## Docker
