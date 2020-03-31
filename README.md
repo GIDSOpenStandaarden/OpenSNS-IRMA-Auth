@@ -55,7 +55,7 @@ Edit the .env file and add the following values
 To start the server with the default configuration, run. 
 ```shell script
 mvn --quiet clean install && docker build . -t irma_server
-docker run -p 8080:8080 --name irma_server irma_server
+docker run -p 8082:8080 --name irma_server irma_server
 ```
 
 # Docker compose
