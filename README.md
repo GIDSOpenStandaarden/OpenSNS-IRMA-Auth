@@ -62,7 +62,7 @@ docker run -p 8082:8080 --env-file=.env --name irma_server irma_server
 # Docker compose
 ```shell script
 cp .env.dist .env
-mvn --quiet clean install && docker-compose build && docker-compose up
+docker-compose build && docker-compose up
 ```
 
 # Configuration
