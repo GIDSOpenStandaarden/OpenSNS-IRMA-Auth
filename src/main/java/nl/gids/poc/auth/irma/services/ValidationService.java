@@ -53,7 +53,7 @@ public class ValidationService {
 
 	private String getHostFromUri(String redirectUri) throws URISyntaxException {
 		URI uri = new URI(redirectUri);
-		return uri.getHost();
+		return StringUtils.defaultString(uri.getHost());
 	}
 
 	private boolean isDomainAllowed(String domain) {
