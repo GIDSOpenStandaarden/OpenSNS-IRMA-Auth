@@ -65,6 +65,8 @@ cp .env.dist .env
 docker-compose build && docker-compose up
 ```
 
+Now you can access the application on http://gids-irma-auth.localhost:8082/?redirect_uri=http://www.nu.nl.
+
 # Configuration
 
 ## Environment variables
