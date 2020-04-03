@@ -24,7 +24,8 @@ available. This manual describes how to use this component.
 ## Running on Docker and Docker compose
 
 ### Setting up the .env file for docker and docker compose
-Edit the .env file and add the following values
+
+Copy the `.env.dist` file to `.env` and add the following values
 
 1. IRMA_SERVER_URL, The URL of the IRMA server
 
@@ -54,14 +55,17 @@ Edit the .env file and add the following values
 ## Docker
 To start the server with the default configuration, run. 
 ```shell script
-mvn --quiet clean install && docker build . -t irma_server
-docker run -p 8080:8080 --name irma_server irma_server
+docker build . -t irma_server
+docker run -p 8082:8080 --env-file=.env --name irma_server irma_server
 ```
 
 # Docker compose
 ```shell script
-mvn --quiet clean install && docker-compose build && docker-compose up
+cp .env.dist .env
+docker-compose build && docker-compose up
 ```
+
+Now you can access the application on http://gids-irma-auth.localhost:8082/?redirect_uri=http://www.nu.nl.
 
 # Configuration
 

@@ -1,7 +1,18 @@
-FROM openjdk:8u181-jre
-ENV TZ="Europe/Amsterdam"
+FROM maven:3.6-jdk-8 AS build
 
-ADD target/gids-irma-auth.jar /gids-irma-auth.jar
+ADD pom.xml /
+
+ADD src /src
+
+RUN mvn clean install
+
+FROM openjdk:8u181-jre-alpine
+
+RUN apk update && apk add bash openssl
+
+COPY --from=build /target/gids-irma-auth.jar /gids-irma-auth.jar
+
+ENV TZ="Europe/Amsterdam"
 
 ADD keys /keys
 
@@ -13,4 +24,4 @@ RUN chmod +x entrypoint.bash
 
 EXPOSE 8080
 
-ENTRYPOINT [ "bash", "entrypoint.bash" ]
+ENTRYPOINT [ "/bin/bash", "entrypoint.bash" ]
