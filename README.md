@@ -27,9 +27,13 @@ available. This manual describes how to use this component.
 
 Copy the `.env.dist` file to `.env` and add the following values
 
-1. IRMA_SERVER_URL, The URL of the IRMA server
+1. IRMA_SERVER_URL, The URL of the IRMA server. Of you expose the IRMA server with ngrok, the ngrok URL should be set here.
 
        IRMA_SERVER_URL=http://localhost:8081
+       
+   or
+       
+       IRMA_SERVER_URL=https://41bd98bc.ngrok.io
 
 1. IRMA_SERVER_TOKEN, The shared token from the IRMA server
 
