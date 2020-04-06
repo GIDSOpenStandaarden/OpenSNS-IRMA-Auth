@@ -35,11 +35,6 @@ Copy the `.env.dist` file to `.env` and add the following values
 
        IRMA_SERVER_TOKEN=f1aa25cd6fc...
 
-1. IRMA_SERVER_JWTPUBLICKEY, the JWT public key from your irma server. Make sure the file ends with
-.pem and is located in the /keys folder. The format must be pem (-----BEGIN PUBLIC KEY----- ... -----END PUBLIC KEY-----)
-
-       IRMA_SERVER_JWTPUBLICKEY=/keys/mypublickeyfrommyirmaserver.pem
-
 1. GIDS_SERVER_JWTPUBLICKEY/GIDS_SERVER_JWTPRIVATEKEY. Generate a keypair in the root directory by running:
         
         cd keys
@@ -75,7 +70,6 @@ Now you can access the application on http://gids-irma-auth.localhost:8082/?redi
 | Variable | default | remark |
 | ---: | --- | :--- |
 | IRMA_SERVER_URL               |        | The URL of the IRMA server. |
-| IRMA_SERVER_JWTPUBLICKEY      |        | The public key of the IRMA server. The value can be a PEM encoded string or file. |
 | IRMA_SERVER_ISSUER            | testsp | The API client access token of the IRMA server.  |
 | IRMA_SERVER_TOKEN             |        | The API client access token of the IRMA server.  |
 | GIDS_SERVER_JWTPUBLICKEY      | \[generated if absent]* | The public key of the GIDS server, used for JWT signing. The value can be a PEM encoded string or file. |
