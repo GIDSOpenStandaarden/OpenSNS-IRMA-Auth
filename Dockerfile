@@ -4,7 +4,7 @@ ADD pom.xml /
 
 ADD src /src
 
-RUN mvn clean install
+RUN mvn --quiet clean install
 
 FROM openjdk:8u181-jre-alpine
 
