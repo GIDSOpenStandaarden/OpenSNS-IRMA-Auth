@@ -7,6 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -53,7 +54,9 @@ public class ValidationService {
 
 	private String getHostFromUri(String redirectUri) throws URISyntaxException {
 		URI uri = new URI(redirectUri);
-		return StringUtils.defaultString(uri.getHost());
+		String host = uri.getHost();
+		Assert.hasText(host, String.format("Unable to get domain from Uri %s", redirectUri));
+		return host;
 	}
 
 	private boolean isDomainAllowed(String domain) {
