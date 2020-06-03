@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  *
@@ -15,7 +16,8 @@ public class PublicKeyController {
 	private ServerConfiguration serverConfiguration;
 
 	@RequestMapping(value = "/public_key.txt", produces = MediaType.TEXT_PLAIN_VALUE)
-	public String public_key() {
+	public @ResponseBody
+	String public_key() {
 		return serverConfiguration.getJwtPublicKey();
 	}
 }
