@@ -46,7 +46,7 @@ public class SessionController {
 	}
 
 	private String getRedirectUri(String userIdentification, String redirectUri) {
-		if (StringUtils.contains("?", redirectUri)) {
+		if (StringUtils.contains(redirectUri, "?")) {
 			return redirectUri + "&token=" + authenticationService.createJwt(userIdentification, redirectUri);
 		} else {
 			return redirectUri + "?token=" + authenticationService.createJwt(userIdentification, redirectUri);
