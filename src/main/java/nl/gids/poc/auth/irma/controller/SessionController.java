@@ -1,6 +1,5 @@
 package nl.gids.poc.auth.irma.controller;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import nl.gids.poc.auth.irma.configuration.ApplicationConfiguration;
 import nl.gids.poc.auth.irma.services.AuthenticationService;
 import nl.gids.poc.auth.irma.services.IrmaService;

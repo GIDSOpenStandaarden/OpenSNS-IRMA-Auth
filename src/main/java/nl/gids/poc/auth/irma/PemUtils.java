@@ -27,16 +27,19 @@ public class PemUtils {
 	public static String formatPublicKey(PublicKey publicKey) {
 		byte[] encoded = publicKey.getEncoded();
 		String publicKeyContent = java.util.Base64.getEncoder().encodeToString(encoded);
-		String publicKeyFormatted = "-----BEGIN PUBLIC KEY-----" + System.lineSeparator();
+		StringBuilder publicKeyFormatted = new StringBuilder("-----BEGIN PUBLIC KEY-----");
+		publicKeyFormatted.append(System.lineSeparator());
 		for (final String row :
 				com.google.common.base.Splitter
 						.fixedLength(64)
 						.split(publicKeyContent)
 		) {
-			publicKeyFormatted += row + System.lineSeparator();
+			publicKeyFormatted.append(row);
+			publicKeyFormatted.append(System.lineSeparator());
 		}
-		publicKeyFormatted += "-----END PUBLIC KEY-----";
-		return publicKeyFormatted;
+		publicKeyFormatted.append("-----END PUBLIC KEY-----");
+		publicKeyFormatted.append(System.lineSeparator());
+		return publicKeyFormatted.toString();
 	}
 
 	public static byte[] readPemKeyFromFileOrValue(String value) throws IOException {

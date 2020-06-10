@@ -3,8 +3,6 @@ package nl.gids.poc.auth.irma.services;
 import nl.gids.poc.auth.irma.configuration.ApplicationConfiguration;
 import nl.gids.poc.auth.irma.exception.ValidationException;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -22,8 +20,6 @@ import static java.lang.String.format;
  */
 @Service
 public class ValidationService {
-
-	private static final Log LOG = LogFactory.getLog(ValidationService.class);
 
 	@Autowired
 	ApplicationConfiguration applicationConfiguration;
@@ -55,7 +51,7 @@ public class ValidationService {
 	private String getHostFromUri(String redirectUri) throws URISyntaxException {
 		URI uri = new URI(redirectUri);
 		String host = uri.getHost();
-		Assert.hasText(host, String.format("Unable to get domain from Uri %s", redirectUri));
+		Assert.hasText(host, format("Unable to get domain from Uri %s", redirectUri));
 		return host;
 	}
 

@@ -80,6 +80,6 @@ public class AuthenticationService {
 		signature.update(challenge);
 
 		Assert.isTrue(signature.verify(signed), "The public and private key do NOT match");
-		LOG.info(String.format("The JWT signing keypair is configured correctly, the public key is:\n%s", PemUtils.formatPublicKey(publicKey)));
+		LOG.info(String.format("The JWT signing keypair is configured correctly, the public key is:%n%s", PemUtils.formatPublicKey(publicKey)));
 	}
 }

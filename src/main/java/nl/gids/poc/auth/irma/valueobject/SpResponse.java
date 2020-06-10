@@ -1,7 +1,5 @@
 package nl.gids.poc.auth.irma.valueobject;
 
-import nl.gids.poc.auth.irma.controller.SessionController;
-
 import java.util.HashMap;
 
 /**
