@@ -1,18 +1,16 @@
-FROM maven:3.6-jdk-8 AS build
+FROM maven:3.6.3-jdk-11 AS build
 
 ADD pom.xml /
 
 ADD src /src
 
-RUN mvn --quiet clean install
+RUN mvn --quiet clean package
 
-FROM openjdk:8u181-jre-alpine
+FROM openjdk:11-jre
 
 RUN apk update && apk add bash openssl
 
 COPY --from=build /target/gids-irma-auth.jar /gids-irma-auth.jar
-
-ENV TZ="Europe/Amsterdam"
 
 ADD keys /keys
 
@@ -24,4 +22,4 @@ RUN chmod +x entrypoint.bash
 
 EXPOSE 8080
 
-ENTRYPOINT [ "/bin/bash", "entrypoint.bash" ]
+ENTRYPOINT [ "bash", "entrypoint.bash" ]
