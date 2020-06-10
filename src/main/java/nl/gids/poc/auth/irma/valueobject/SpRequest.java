@@ -1,16 +1,36 @@
 package nl.gids.poc.auth.irma.valueobject;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import nl.gids.poc.auth.irma.controller.SessionController;
 
 /**
  *
  */
 public class SpRequest {
-	public Request request;
+	private Request request;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private Integer timeout = null;
 
 	public SpRequest(String attribute) {
+
 		request = new Request(attribute);
+	}
+
+	public Request getRequest() {
+		return request;
+	}
+
+	public void setRequest(Request request) {
+		this.request = request;
+	}
+
+	public Integer getTimeout() {
+		return timeout;
+	}
+
+	public void setTimeout(Integer timeout) {
+		this.timeout = timeout;
 	}
 
 	public static class Request {

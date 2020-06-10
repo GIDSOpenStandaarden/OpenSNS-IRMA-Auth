@@ -13,6 +13,7 @@ public class IrmaConfiguration {
 	private String token;
 	private String url;
 	private String jwtPublicKey;
+	private int timeout;
 
 	public String getIssuer() {
 		return issuer;
@@ -28,6 +29,14 @@ public class IrmaConfiguration {
 
 	public void setJwtPublicKey(String jwtPublicKey) {
 		this.jwtPublicKey = jwtPublicKey;
+	}
+
+	public int getTimeout() {
+		return timeout;
+	}
+
+	public void setTimeout(int timeout) {
+		this.timeout = timeout;
 	}
 
 	public String getToken() {

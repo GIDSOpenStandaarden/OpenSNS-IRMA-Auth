@@ -89,6 +89,9 @@ public class IrmaService {
 		String server = irmaConfiguration.getUrl();
 		String url = server + "/session";
 		SpRequest request = new SpRequest(attribute);
+		if (irmaConfiguration.getTimeout() > 0) {
+			request.setTimeout(irmaConfiguration.getTimeout());
+		}
 		String jwtToken = Jwts.builder()
 				.setHeaderParam("typ", "jwt")
 				.setIssuedAt(new Date())
