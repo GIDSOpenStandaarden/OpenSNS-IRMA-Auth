@@ -16,7 +16,7 @@ to understand some core concepts that demand some attention.
 
 ## The manual
 
-A [developer manual](https://docs.google.com/document/d/1oYt41LxmhstPicUIj8QRqZG2zD7oDV2DvQq_omOYroY/edit?usp=sharing) is 
+A [developer manual](./src/main/resources/public/manual/manual.pdf) is 
 available. This manual describes how to use this component.
 
 # Running
