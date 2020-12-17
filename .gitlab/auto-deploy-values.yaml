@@ -1,0 +1,5 @@
+livenessProbe:
+  probeType: "tcpSocket"
+
+readinessProbe:
+  probeType: "tcpSocket"
