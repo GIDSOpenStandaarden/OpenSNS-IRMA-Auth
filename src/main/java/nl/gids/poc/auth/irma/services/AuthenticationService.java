@@ -4,6 +4,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import nl.gids.poc.auth.irma.PemUtils;
 import nl.gids.poc.auth.irma.configuration.ServerConfiguration;
+import nl.gids.poc.auth.irma.utils.KeyUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,6 +38,7 @@ public class AuthenticationService {
 
 	public String createJwt(String userId, String audience) {
 		return Jwts.builder().signWith(SignatureAlgorithm.RS256, privateKey)
+				.setHeaderParam("kid", KeyUtils.getFingerPrint(publicKey))
 				.setIssuedAt(new Date())
 				.setExpiration(new Date(System.currentTimeMillis() + 5 * 60 * 1000))
 				.setIssuer(serverConfiguration.getIssuer())
@@ -48,7 +50,7 @@ public class AuthenticationService {
 
 	@PostConstruct
 	public void init() throws Exception {
-		Assert.isTrue(StringUtils.isNotEmpty(serverConfiguration.getJwtPublicKey()), "The value for gids.server.jwtPublicKeyneeds to be configured.");
+		Assert.isTrue(StringUtils.isNotEmpty(serverConfiguration.getJwtPublicKey()), "The value for gids.server.jwtPublicKey needs to be configured.");
 		Assert.isTrue(StringUtils.isNotEmpty(serverConfiguration.getJwtPrivateKey()), "The value for gids.server.jwtPrivateKey needs to be configured.");
 		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 		publicKey = (RSAPublicKey) keyFactory.generatePublic(new X509EncodedKeySpec(getPublicKey()));
@@ -56,12 +58,12 @@ public class AuthenticationService {
 		validate(publicKey, privateKey);
 	}
 
-	private byte[] getPublicKey() throws IOException {
-		return PemUtils.readPemKeyFromFileOrValue(serverConfiguration.getJwtPublicKey());
-	}
-
 	private byte[] getPrivateKey() throws IOException {
 		return PemUtils.readPemKeyFromFileOrValue(serverConfiguration.getJwtPrivateKey());
+	}
+
+	private byte[] getPublicKey() throws IOException {
+		return PemUtils.readPemKeyFromFileOrValue(serverConfiguration.getJwtPublicKey());
 	}
 
 	private void validate(RSAPublicKey publicKey, RSAPrivateKey privateKey) throws GeneralSecurityException {
