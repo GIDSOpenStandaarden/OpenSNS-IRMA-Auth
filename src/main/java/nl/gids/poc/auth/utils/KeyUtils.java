@@ -2,19 +2,17 @@
  * Copyright (c) 2020 Headease B.V., This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
  */
 
-package nl.gids.poc.auth.irma.utils;
+package nl.gids.poc.auth.utils;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringUtils;
 import org.jose4j.jwk.JsonWebKey;
 import org.jose4j.lang.JoseException;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.StringReader;
 import java.security.*;
+import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 /**
@@ -31,24 +29,7 @@ public class KeyUtils {
 	public static RSAPublicKey getRsaPublicKey(String publicKey) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 		return (RSAPublicKey) keyFactory.generatePublic(
-				new X509EncodedKeySpec(getEncodedKey(publicKey)));
-	}
-
-	private static byte[] getEncodedKey(String key) {
-		try {
-			BufferedReader br = new BufferedReader(new StringReader(key));
-			StringBuilder rawKey = new StringBuilder();
-			String line;
-			while ((line = br.readLine()) != null) {
-				if (!StringUtils.startsWith(line, "----")) {
-					rawKey.append(line);
-				}
-			}
-
-			return Base64.decodeBase64(rawKey.toString());
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+				new X509EncodedKeySpec(PemUtils.readPemKeyString(publicKey)));
 	}
 
 	public static String getFingerPrint(PublicKey publicKey) {
@@ -60,4 +41,13 @@ public class KeyUtils {
 		}
 	}
 
+	public static RSAPrivateKey getPrivateKey(String key) throws IOException, GeneralSecurityException {
+		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+		return (RSAPrivateKey) keyFactory.generatePrivate(new PKCS8EncodedKeySpec(PemUtils.readPemKeyFromFileOrValue(key)));
+	}
+
+	public static RSAPublicKey getPublicKey(String key) throws IOException, GeneralSecurityException {
+		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+		return (RSAPublicKey) keyFactory.generatePublic(new X509EncodedKeySpec(PemUtils.readPemKeyFromFileOrValue(key)));
+	}
 }

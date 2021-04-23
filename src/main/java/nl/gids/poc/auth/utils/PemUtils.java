@@ -1,4 +1,4 @@
-package nl.gids.poc.auth.irma;
+package nl.gids.poc.auth.utils;
 
 import com.google.common.io.Files;
 import org.apache.commons.lang3.StringUtils;

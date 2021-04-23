@@ -2,9 +2,9 @@ package nl.gids.poc.auth.irma.services;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import nl.gids.poc.auth.irma.PemUtils;
 import nl.gids.poc.auth.irma.configuration.ServerConfiguration;
-import nl.gids.poc.auth.irma.utils.KeyUtils;
+import nl.gids.poc.auth.utils.KeyUtils;
+import nl.gids.poc.auth.utils.PemUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,12 +15,9 @@ import org.springframework.util.Assert;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.security.KeyFactory;
 import java.security.Signature;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.Date;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -36,34 +33,29 @@ public class AuthenticationService {
 	@Autowired
 	ServerConfiguration serverConfiguration;
 
-	public String createJwt(String userId, String audience) {
+	public String createJwt(String userId, String audience)  {
+		return createJwt(userId, audience, serverConfiguration.getIssuer());
+
+	}
+
+	public String createJwt(String userId, String audience, String issuer) {
 		return Jwts.builder().signWith(SignatureAlgorithm.RS256, privateKey)
 				.setHeaderParam("kid", KeyUtils.getFingerPrint(publicKey))
 				.setIssuedAt(new Date())
 				.setExpiration(new Date(System.currentTimeMillis() + 5 * 60 * 1000))
-				.setIssuer(serverConfiguration.getIssuer())
+				.setIssuer(issuer)
 				.setAudience(audience)
 				.setSubject(userId)
 				.compact();
-
 	}
 
 	@PostConstruct
 	public void init() throws Exception {
 		Assert.isTrue(StringUtils.isNotEmpty(serverConfiguration.getJwtPublicKey()), "The value for gids.server.jwtPublicKey needs to be configured.");
 		Assert.isTrue(StringUtils.isNotEmpty(serverConfiguration.getJwtPrivateKey()), "The value for gids.server.jwtPrivateKey needs to be configured.");
-		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-		publicKey = (RSAPublicKey) keyFactory.generatePublic(new X509EncodedKeySpec(getPublicKey()));
-		privateKey = (RSAPrivateKey) keyFactory.generatePrivate(new PKCS8EncodedKeySpec(getPrivateKey()));
+		publicKey = KeyUtils.getPublicKey(serverConfiguration.getJwtPublicKey());
+		privateKey = KeyUtils.getPrivateKey(serverConfiguration.getJwtPrivateKey());
 		validate(publicKey, privateKey);
-	}
-
-	private byte[] getPrivateKey() throws IOException {
-		return PemUtils.readPemKeyFromFileOrValue(serverConfiguration.getJwtPrivateKey());
-	}
-
-	private byte[] getPublicKey() throws IOException {
-		return PemUtils.readPemKeyFromFileOrValue(serverConfiguration.getJwtPublicKey());
 	}
 
 	private void validate(RSAPublicKey publicKey, RSAPrivateKey privateKey) throws GeneralSecurityException {

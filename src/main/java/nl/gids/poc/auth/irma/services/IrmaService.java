@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import nl.gids.poc.auth.irma.PemUtils;
+import nl.gids.poc.auth.utils.PemUtils;
 import nl.gids.poc.auth.irma.configuration.IrmaConfiguration;
 import nl.gids.poc.auth.irma.valueobject.SpRequest;
 import nl.gids.poc.auth.irma.valueobject.SpResponse;

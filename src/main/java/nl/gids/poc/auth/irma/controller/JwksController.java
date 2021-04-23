@@ -5,7 +5,7 @@
 package nl.gids.poc.auth.irma.controller;
 
 import nl.gids.poc.auth.irma.configuration.ServerConfiguration;
-import nl.gids.poc.auth.irma.utils.KeyUtils;
+import nl.gids.poc.auth.utils.KeyUtils;
 import org.jose4j.jwk.JsonWebKey;
 import org.jose4j.jwk.JsonWebKeySet;
 import org.jose4j.lang.JoseException;
