@@ -28,6 +28,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class AuthenticationService {
 
 	private static final Log LOG = LogFactory.getLog(AuthenticationService.class);
+	public static final int TOKEN_EXPIRY = 60 * 60 * 1000; // 1 Hour
 	protected RSAPublicKey publicKey;
 	protected RSAPrivateKey privateKey;
 	@Autowired
@@ -42,7 +43,7 @@ public class AuthenticationService {
 		return Jwts.builder().signWith(SignatureAlgorithm.RS256, privateKey)
 				.setHeaderParam("kid", KeyUtils.getFingerPrint(publicKey))
 				.setIssuedAt(new Date())
-				.setExpiration(new Date(System.currentTimeMillis() + 5 * 60 * 1000))
+				.setExpiration(new Date(System.currentTimeMillis() + TOKEN_EXPIRY))
 				.setIssuer(issuer)
 				.setAudience(audience)
 				.setSubject(userId)
