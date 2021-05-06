@@ -6,8 +6,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 
-import java.nio.charset.StandardCharsets;
-import java.security.*;
+import java.security.GeneralSecurityException;
+import java.security.MessageDigest;
+import java.security.PublicKey;
 import java.util.Base64;
 
 /**
@@ -18,19 +19,10 @@ public class ClientCredentialValidator {
 
 	static final Log LOG = LogFactory.getLog(ClientCredentialValidator.class);
 
-	final Oauth2Configuration oauth2Configuration;
+	private final Oauth2Configuration oauth2Configuration;
 
 	public ClientCredentialValidator(Oauth2Configuration oauth2Configuration) {
 		this.oauth2Configuration = oauth2Configuration;
-	}
-
-	public String sign(String userName, PrivateKey privateKey) throws GeneralSecurityException {
-		byte[] bytes = userName.getBytes(StandardCharsets.UTF_8);
-		Signature sig = Signature.getInstance("SHA1WithRSA");
-		sig.initSign(privateKey);
-		sig.update(bytes);
-		byte[] signatureBytes = sig.sign();
-		return Base64.getEncoder().encodeToString(signatureBytes);
 	}
 
 	public boolean validate(String clientId, String userName, String password, PublicKey publicKey) throws GeneralSecurityException {
@@ -38,7 +30,7 @@ public class ClientCredentialValidator {
 			return false;
 		}
 
-		String toHash = oauth2Configuration.getSecret() +clientId + oauth2Configuration.getSecret() + clientId;
+		String toHash = oauth2Configuration.getSecret() + clientId + oauth2Configuration.getSecret() + clientId;
 
 		MessageDigest md = MessageDigest.getInstance("MD5");
 		md.update(toHash.getBytes());
