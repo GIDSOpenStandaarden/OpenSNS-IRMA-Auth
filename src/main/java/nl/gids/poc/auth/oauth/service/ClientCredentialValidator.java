@@ -1,5 +1,6 @@
 package nl.gids.poc.auth.oauth.service;
 
+import nl.gids.poc.auth.oauth.configuration.Oauth2Configuration;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,6 +18,12 @@ public class ClientCredentialValidator {
 
 	static final Log LOG = LogFactory.getLog(ClientCredentialValidator.class);
 
+	final Oauth2Configuration oauth2Configuration;
+
+	public ClientCredentialValidator(Oauth2Configuration oauth2Configuration) {
+		this.oauth2Configuration = oauth2Configuration;
+	}
+
 	public String sign(String userName, PrivateKey privateKey) throws GeneralSecurityException {
 		byte[] bytes = userName.getBytes(StandardCharsets.UTF_8);
 		Signature sig = Signature.getInstance("SHA1WithRSA");
@@ -31,16 +38,16 @@ public class ClientCredentialValidator {
 			return false;
 		}
 
-		Signature publicSignature = Signature.getInstance("SHA1WithRSA");
-		publicSignature.initVerify(publicKey);
-		publicSignature.update(userName.getBytes(StandardCharsets.UTF_8));
+		String toHash = oauth2Configuration.getSecret() +clientId + oauth2Configuration.getSecret() + clientId;
 
-		byte[] signatureBytes = Base64.getDecoder().decode(password);
-		try {
-			return publicSignature.verify(signatureBytes);
-		} catch (SignatureException ex) {
-			LOG.warn("Failed to validate signature", ex);
-			return false;
+		MessageDigest md = MessageDigest.getInstance("MD5");
+		md.update(toHash.getBytes());
+		String expectedPassword = Base64.getEncoder().encodeToString(md.digest());
+		boolean rv = StringUtils.equals(expectedPassword, password);
+
+		if (!rv) {
+			LOG.info(String.format("Failed to validate password %s, expecting %s", password, expectedPassword));
 		}
+		return rv;
 	}
 }
