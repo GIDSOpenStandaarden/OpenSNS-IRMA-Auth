@@ -130,12 +130,7 @@ public class Oauth2Controller {
 				String[] parts = StringUtils.split(authorizationLine, ':');
 				String userName = parts[0];
 				String password = parts[1];
-				boolean validate = clientCredentialValidator.validate(clientId, userName, password, KeyUtils.getPublicKey(serverConfiguration.getJwtPublicKey()));
-				if (!validate) {
-					String sign = clientCredentialValidator.sign(clientId, KeyUtils.getPrivateKey(serverConfiguration.getJwtPrivateKey()));
-					LOG.warn(String.format("Unexpected password %s, expecting %s", password, sign));
-				}
-				return validate;
+				return clientCredentialValidator.validate(clientId, userName, password, KeyUtils.getPublicKey(serverConfiguration.getJwtPublicKey()));
 			}
 
 		}
