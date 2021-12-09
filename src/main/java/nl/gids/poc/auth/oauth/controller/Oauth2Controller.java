@@ -17,9 +17,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
 import java.util.Base64;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -30,6 +31,7 @@ public class Oauth2Controller {
 
 
 	final static Log LOG = LogFactory.getLog(Oauth2Controller.class);
+	public static final Pattern PATTERN_USERNAME_PASSWORD = Pattern.compile("(.+):(.+)");
 	final OauthSessionService oauthSessionService;
 	final AuthenticationService authenticationService;
 	final ClientCredentialValidator clientCredentialValidator;
@@ -126,13 +128,12 @@ public class Oauth2Controller {
 		if (StringUtils.startsWith(authorization, "Basic")) {
 			String authorizationLine = StringUtils.trim(StringUtils.removeStart(authorization, "Basic"));
 			authorizationLine = new String(Base64.getDecoder().decode(authorizationLine));
-			if (StringUtils.countMatches(authorizationLine, ':') == 1) {
-				String[] parts = StringUtils.split(authorizationLine, ':');
-				String userName = parts[0];
-				String password = parts[1];
+			Matcher matcher = PATTERN_USERNAME_PASSWORD.matcher(authorizationLine);
+			if (matcher.matches()) {
+				String userName = matcher.group(1);
+				String password = matcher.group(2);
 				return clientCredentialValidator.validate(clientId, userName, password, KeyUtils.getPublicKey(serverConfiguration.getJwtPublicKey()));
 			}
-
 		}
 		return false;
 	}
