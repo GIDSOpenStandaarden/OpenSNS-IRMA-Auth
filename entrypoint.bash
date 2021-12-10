@@ -18,7 +18,7 @@ elif [ ! -z "${GIDS_SERVER_JWTPUBLICKEY}" ]; then
 fi
 
 echo "Downloading IRMA publi key from ${IRMA_SERVER_URL}/publickey"
-IRMA_SERVER_JWTPUBLICKEY="`wget -qO- ${IRMA_SERVER_URL}/publickey`"
+IRMA_SERVER_JWTPUBLICKEY="`wget --no-check-certificate -qO- ${IRMA_SERVER_URL}/publickey`"
 echo "IRMA server public key is:"
 echo "${IRMA_SERVER_JWTPUBLICKEY}"
 export IRMA_SERVER_JWTPUBLICKEY
