@@ -86,7 +86,7 @@ public class Oauth2Controller {
 			throw new InvalidOauthRequestException("Authorization failed.");
 		}
 
-		if (StringUtils.equals("id_token", grantType)) {
+		if (StringUtils.equals("id_token", grantType) || StringUtils.equals("authorization_code", grantType)) {
 			if (!StringUtils.equals(oauthSession.getRedirectUri(), redirectUri)) {
 				throw new InvalidOauthRequestException("The redirect_uri does not match");
 			}
