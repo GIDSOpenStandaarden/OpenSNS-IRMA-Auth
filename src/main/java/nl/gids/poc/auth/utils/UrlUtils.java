@@ -26,6 +26,6 @@ public class UrlUtils {
     }
 
     public static boolean isDefault(int serverPort, String scheme) {
-        return (serverPort == 443 && StringUtils.equals(scheme, "https")) || (serverPort == 80 && StringUtils.equals(scheme, "http"));
+        return serverPort == -1 || (serverPort == 443 && StringUtils.equals(scheme, "https")) || (serverPort == 80 && StringUtils.equals(scheme, "http"));
     }
 }
