@@ -8,6 +8,7 @@ import nl.gids.poc.auth.oauth.service.OauthSessionService;
 import nl.gids.poc.auth.oauth.valueobject.IdTokenResponse;
 import nl.gids.poc.auth.oauth.valueobject.OauthSession;
 import nl.gids.poc.auth.utils.KeyUtils;
+import nl.gids.poc.auth.utils.UrlUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -90,26 +91,11 @@ public class Oauth2Controller {
 			if (!StringUtils.equals(oauthSession.getRedirectUri(), redirectUri)) {
 				throw new InvalidOauthRequestException("The redirect_uri does not match");
 			}
-			return tokenIdToken(oauthSession, getIssuer(request));
+			return tokenIdToken(oauthSession, UrlUtils.getBaseUrl(request));
 		} else if (StringUtils.equals("refresh_token", grantType)) {
 			return tokenRefresh(refreshToken);
 		}
 		throw new InvalidOauthRequestException("Unknown grant_type: " + grantType);
-	}
-
-	private String getIssuer(HttpServletRequest request) {
-		int serverPort = request.getServerPort();
-		String scheme = request.getScheme();
-		String serverName = request.getServerName();
-		if (isDefault(serverPort, scheme)) {
-			return String.format("%s://%s", scheme, serverName);
-		} else {
-			return String.format("%s://%s:%d", scheme, serverName, serverPort);
-		}
-	}
-
-	private boolean isDefault(int serverPort, String scheme) {
-		return (serverPort == 443 && StringUtils.equals(scheme, "https")) || (serverPort == 80 && StringUtils.equals(scheme, "http"));
 	}
 
 	private IdTokenResponse tokenIdToken(OauthSession oauthSession, String issuer) {
