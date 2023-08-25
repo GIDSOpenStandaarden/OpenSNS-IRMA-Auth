@@ -1,5 +1,6 @@
 package nl.gids.poc.auth.irma.controller;
 
+import jakarta.servlet.http.HttpSession;
 import nl.gids.poc.auth.irma.configuration.ApplicationConfiguration;
 import nl.gids.poc.auth.irma.services.AuthenticationService;
 import nl.gids.poc.auth.irma.services.IrmaService;
@@ -8,11 +9,11 @@ import nl.gids.poc.auth.oauth.service.OauthSessionService;
 import nl.gids.poc.auth.oauth.valueobject.OauthSession;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 
 /**
  *

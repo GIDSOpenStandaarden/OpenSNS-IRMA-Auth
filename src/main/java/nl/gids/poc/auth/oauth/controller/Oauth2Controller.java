@@ -1,5 +1,7 @@
 package nl.gids.poc.auth.oauth.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import nl.gids.poc.auth.irma.configuration.ServerConfiguration;
 import nl.gids.poc.auth.irma.services.AuthenticationService;
 import nl.gids.poc.auth.oauth.exception.InvalidOauthRequestException;
@@ -15,8 +17,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Base64;

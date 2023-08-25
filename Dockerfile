@@ -6,7 +6,7 @@ ADD src /src
 
 RUN mvn --quiet clean package
 
-FROM openjdk:8u181-jre-alpine
+FROM openjdk:22-ea-jdk-slim-bullseye
 
 RUN apk update && apk add bash openssl
 
