@@ -30,6 +30,6 @@ public class IndexController {
 		session.setAttribute("attribute", attribute);
 		validationService.validateAttribute(attribute);
 		validationService.validateRedirectUri(redirectUri);
-		return "redirect:irma.html";
+		return "redirect:yivi.html";
 	}
 }
