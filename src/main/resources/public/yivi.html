@@ -36,7 +36,7 @@
   $(document).ready(function () {
 
       const yiviWeb = yivi.newWeb({
-          debugging: false,            // Enable to get helpful output in the browser console
+          debugging: true,            // Enable to get helpful output in the browser console
           element:   '#yivi-web-form', // Which DOM element to render to
 
           // Back-end options
@@ -47,16 +47,27 @@
               start: {
                   url: o => `${o.url}/start`,
                   method: 'POST'
-              },
-              result: {
-                  url: (o, {sessionPtr, sessionToken}) => `${o.url}/result`,
-                  method: 'POST'
               }
           }
       });
 
       yiviWeb.start()
-      .then(result => console.log("Successful disclosure! 🎉", result))
+      .then(resultJwt => {
+          console.log("Successful disclosure! 🎉", resultJwt)
+          $.post({
+              'url': '/api/session/end',
+              'data': JSON.stringify({'token': resultJwt}),
+              'contentType': 'application/json',
+              'dataType': 'json',
+              'success': function (data) {
+                  if (data.url) {
+                      document.location = data.url
+                  } else {
+                      window.history.back();
+                  }
+              }
+          })
+      })
       .catch(error => console.error("Couldn't do what you asked 😢", error));
   });
 </script>
