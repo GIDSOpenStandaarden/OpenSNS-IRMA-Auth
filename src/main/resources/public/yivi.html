@@ -47,27 +47,18 @@
               start: {
                   url: o => `${o.url}/start`,
                   method: 'POST'
+              },
+              result: {
+                  url: (o, {sessionPtr, sessionToken}) => `${o.url}/end`,
+                  body: (o, {sessionPtr, sessionToken}) => JSON.stringify({'token': sessionToken}),
+                  'contentType': 'application/json',
+                  method: 'POST'
               }
           }
       });
 
       yiviWeb.start()
-      .then(resultJwt => {
-          console.log("Successful disclosure! 🎉", resultJwt)
-          $.post({
-              'url': '/api/session/end',
-              'data': JSON.stringify({'token': resultJwt}),
-              'contentType': 'application/json',
-              'dataType': 'json',
-              'success': function (data) {
-                  if (data.url) {
-                      document.location = data.url
-                  } else {
-                      window.history.back();
-                  }
-              }
-          })
-      })
+      .then(result => console.log("Successful disclosure! 🎉", result))
       .catch(error => console.error("Couldn't do what you asked 😢", error));
   });
 </script>
