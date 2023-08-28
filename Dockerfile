@@ -8,8 +8,6 @@ RUN mvn --quiet clean package
 
 FROM openjdk:22-ea-jdk-slim-bullseye
 
-RUN apk update && apk add bash openssl
-
 COPY --from=build /target/gids-irma-auth.jar /gids-irma-auth.jar
 
 ADD keys /keys
