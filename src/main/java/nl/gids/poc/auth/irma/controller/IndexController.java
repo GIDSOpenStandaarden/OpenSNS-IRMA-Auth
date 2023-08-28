@@ -1,5 +1,6 @@
 package nl.gids.poc.auth.irma.controller;
 
+import jakarta.servlet.http.HttpSession;
 import nl.gids.poc.auth.irma.configuration.ApplicationConfiguration;
 import nl.gids.poc.auth.irma.services.ValidationService;
 import org.apache.commons.lang3.StringUtils;
@@ -8,7 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpSession;
 import java.net.URISyntaxException;
 
 /**
@@ -30,6 +30,6 @@ public class IndexController {
 		session.setAttribute("attribute", attribute);
 		validationService.validateAttribute(attribute);
 		validationService.validateRedirectUri(redirectUri);
-		return "redirect:irma.html";
+		return "redirect:yivi.html";
 	}
 }

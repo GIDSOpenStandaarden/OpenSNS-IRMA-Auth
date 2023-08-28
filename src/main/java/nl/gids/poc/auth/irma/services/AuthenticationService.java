@@ -2,6 +2,7 @@ package nl.gids.poc.auth.irma.services;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import jakarta.annotation.PostConstruct;
 import nl.gids.poc.auth.irma.configuration.ServerConfiguration;
 import nl.gids.poc.auth.utils.KeyUtils;
 import nl.gids.poc.auth.utils.PemUtils;
@@ -12,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.Signature;
 import java.security.interfaces.RSAPrivateKey;
