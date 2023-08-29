@@ -38,7 +38,7 @@ public class SessionController {
 		return irmaService.startSession(getAttribute(httpSession));
 	}
 
-	@RequestMapping(value = "end/{sessionToken}", method = RequestMethod.POST, produces = {"application/json"}, consumes = {"application/json"})
+	@RequestMapping(value = "end/{sessionToken}", method = RequestMethod.POST, produces = {"application/json"})
 	public AutheticationResponse stopSession(@PathVariable String sessionToken, HttpSession httpSession) throws Exception {
 
 		String userIdentification = irmaService.endSession(sessionToken, getAttribute(httpSession));
