@@ -70,20 +70,23 @@ public class IrmaService {
 		jws.setKey(publicKey);
 		final String payload = jws.getPayload();
 
+		LOG.info(String.format("Got the following result JWT for requestorToken [%s]:\n\n%s", requestorToken, payload));
+
 		String userIdentification = "";
 		SpResponse data = objectMapper.readValue(payload, SpResponse.class);
 		for (SpResponse.Disclosure[] disclosures : data.disclosed) {
 			for (SpResponse.Disclosure disclosure : disclosures) {
 				if (StringUtils.equals(attribute, disclosure.id)) {
 					userIdentification = disclosure.rawvalue;
+					break;
 				}
 			}
 		}
 
+		LOG.info("Matched userIdentification: " + userIdentification);
+
 		return userIdentification;
-
 	}
-
 
 	public String startSession(String attribute) {
 		validationService.validateAttribute(attribute);
@@ -117,6 +120,7 @@ public class IrmaService {
 		String server = irmaConfiguration.getUrl();
 		String url = server + "/session/" + requestorToken + "/result-jwt";
 
+		LOG.info("Calling endpoint: " + url);
 		ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 		return response.getBody();
 	}

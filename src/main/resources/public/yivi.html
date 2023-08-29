@@ -56,7 +56,13 @@
       });
 
       yiviWeb.start()
-      .then(result => console.log("Successful disclosure! 🎉", result))
+      .then(result => {
+          if (result.url) {
+              document.location = result.url
+          } else {
+              window.history.back();
+          }
+      })
       .catch(error => console.error("Couldn't do what you asked 😢", error));
   });
 </script>
