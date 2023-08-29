@@ -49,9 +49,7 @@
                   method: 'POST'
               },
               result: {
-                  url: (o, {sessionPtr, sessionToken}) => `${o.url}/end`,
-                  body: (o, {sessionPtr, sessionToken}) => JSON.stringify({'token': sessionToken}),
-                  headers: { 'Content-Type': 'application/json' },
+                  url: (o, {sessionPtr, sessionToken}) => `${o.url}/end/${sessionToken}`,
                   method: 'POST'
               }
           }

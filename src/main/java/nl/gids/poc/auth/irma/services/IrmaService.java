@@ -62,7 +62,10 @@ public class IrmaService {
 		return PemUtils.readPemKeyFromFileOrValue(irmaConfiguration.getJwtPublicKey());
 	}
 
-	public String endSession(String resultJwt, String attribute) throws JoseException, JsonProcessingException {
+	public String endSession(String requestorToken, String attribute) throws JoseException, JsonProcessingException {
+
+		final String resultJwt = getResult(requestorToken);
+
 		final JsonWebStructure jws = JsonWebStructure.fromCompactSerialization(resultJwt);
 		jws.setKey(publicKey);
 		final String payload = jws.getPayload();
@@ -108,6 +111,13 @@ public class IrmaService {
 
 		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
 		return response.getBody();
+	}
 
+	public String getResult(String requestorToken) {
+		String server = irmaConfiguration.getUrl();
+		String url = server + "/session/" + requestorToken + "/result-jwt";
+
+		ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+		return response.getBody();
 	}
 }

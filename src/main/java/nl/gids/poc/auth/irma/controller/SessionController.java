@@ -4,12 +4,11 @@ import jakarta.servlet.http.HttpSession;
 import nl.gids.poc.auth.irma.configuration.ApplicationConfiguration;
 import nl.gids.poc.auth.irma.services.AuthenticationService;
 import nl.gids.poc.auth.irma.services.IrmaService;
-import nl.gids.poc.auth.irma.valueobject.JwtResponse;
 import nl.gids.poc.auth.oauth.service.OauthSessionService;
 import nl.gids.poc.auth.oauth.valueobject.OauthSession;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,10 +38,10 @@ public class SessionController {
 		return irmaService.startSession(getAttribute(httpSession));
 	}
 
-	@RequestMapping(value = "end", method = RequestMethod.POST, produces = {"application/json"}, consumes = {"application/json"})
-	public AutheticationResponse stopSession(@RequestBody JwtResponse jwtResponse, HttpSession httpSession) throws Exception {
+	@RequestMapping(value = "end/{sessionToken}", method = RequestMethod.POST, produces = {"application/json"}, consumes = {"application/json"})
+	public AutheticationResponse stopSession(@PathVariable String sessionToken, HttpSession httpSession) throws Exception {
 
-		String userIdentification = irmaService.endSession(jwtResponse.getToken(), getAttribute(httpSession));
+		String userIdentification = irmaService.endSession(sessionToken, getAttribute(httpSession));
 
 		AutheticationResponse response = new AutheticationResponse();
 		String oauthSessionId = (String) httpSession.getAttribute("oauthSession");
