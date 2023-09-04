@@ -51,7 +51,7 @@ public class AuthenticationService {
 				.setIssuer(issuer)
 				.setAudience(audience)
 				.setSubject(userId)
-				.setClaims(Map.of(
+				.addClaims(Map.of(
 						"nonce", nonce
 				))
 				.compact();
