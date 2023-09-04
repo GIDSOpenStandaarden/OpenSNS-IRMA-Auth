@@ -35,24 +35,24 @@ public class AuthenticationService {
 	@Autowired
 	ServerConfiguration serverConfiguration;
 
-	public String createIdToken(String userId, String audience, String nonce)  {
-		return createIdToken(userId, audience, serverConfiguration.getIssuer(), nonce);
+	public String createIdToken(String userId, String audience)  {
+		return createIdToken(userId, audience, null);
 	}
 
-	public String createIdToken(OauthSession oauthSession, String audience)  {
-		return createIdToken(oauthSession.getUserIdentification(), audience, serverConfiguration.getIssuer(), oauthSession.getNonce());
+	public String createIdToken(OauthSession oauthSession)  {
+		return createIdToken(oauthSession.getUserIdentification(), oauthSession.getClientId(), oauthSession.getNonce());
 	}
 
-	public String createIdToken(String userId, String audience, String issuer, String nonce) {
+	public String createIdToken(String userId, String audience, String nonce) {
 		return Jwts.builder().signWith(SignatureAlgorithm.RS256, privateKey)
 				.setHeaderParam("kid", KeyUtils.getFingerPrint(publicKey))
 				.setIssuedAt(new Date())
 				.setExpiration(new Date(System.currentTimeMillis() + TOKEN_EXPIRY))
-				.setIssuer(issuer)
+				.setIssuer(serverConfiguration.getIssuer())
 				.setAudience(audience)
 				.setSubject(userId)
 				.addClaims(Map.of(
-						"nonce", nonce
+						"nonce", nonce != null ? nonce : ""
 				))
 				.compact();
 	}
@@ -85,13 +85,13 @@ public class AuthenticationService {
 		LOG.info(String.format("The JWT signing keypair is configured correctly, the public key is:%n%s", PemUtils.formatPublicKey(publicKey)));
 	}
 
-	public String createAccessToken(OauthSession oauthSession, String issuer) {
+	public String createAccessToken(OauthSession oauthSession, String audience) {
 		return Jwts.builder().signWith(SignatureAlgorithm.RS256, privateKey)
 				.setHeaderParam("kid", KeyUtils.getFingerPrint(publicKey))
 				.setIssuedAt(new Date())
 				.setExpiration(new Date(System.currentTimeMillis() + TOKEN_EXPIRY))
-				.setIssuer(issuer)
-				.setAudience(oauthSession.getClientId())
+				.setIssuer(serverConfiguration.getIssuer())
+				.setAudience(audience)
 				.setSubject(oauthSession.getUserIdentification())
 				.addClaims(Map.of(
 						"scope", oauthSession.getScope()

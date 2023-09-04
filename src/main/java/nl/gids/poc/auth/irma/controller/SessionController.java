@@ -69,7 +69,7 @@ public class SessionController {
 	}
 
 	private String getRedirectUriNoOAuthSession(String userIdentification, String redirectUri) {
-		String token = authenticationService.createIdToken(userIdentification, redirectUri, null);
+		String token = authenticationService.createIdToken(userIdentification, redirectUri);
 		return appendToUrl(redirectUri, "token", token);
 	}
 

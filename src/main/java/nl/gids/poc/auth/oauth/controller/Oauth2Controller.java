@@ -109,18 +109,17 @@ public class Oauth2Controller {
 	private IdTokenResponse getIdToken(OauthSession oauthSession, String issuer) {
 		IdTokenResponse rv = new IdTokenResponse();
 
-		// Use serverName as issuer.
-		rv.setIdToken(authenticationService.createIdToken(oauthSession, issuer));
+		rv.setIdToken(authenticationService.createIdToken(oauthSession));
 
 		return rv;
 	}
 
-	private OidcTokenResponse getOidcToken(OauthSession oauthSession, String issuer) {
+	private OidcTokenResponse getOidcToken(OauthSession oauthSession, String audience) {
 		OidcTokenResponse rv = new OidcTokenResponse();
 
 		// Use serverName as issuer.
-		rv.setIdToken(authenticationService.createIdToken(oauthSession, issuer));
-		rv.setAccessToken(authenticationService.createAccessToken(oauthSession, issuer));
+		rv.setIdToken(authenticationService.createIdToken(oauthSession));
+		rv.setAccessToken(authenticationService.createAccessToken(oauthSession, audience));
 		rv.setRefreshToken(oauthSession.getRefreshToken());
 
 		return rv;
