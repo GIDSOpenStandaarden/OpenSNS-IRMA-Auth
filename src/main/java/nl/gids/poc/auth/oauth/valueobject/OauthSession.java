@@ -19,6 +19,8 @@ public class OauthSession implements Serializable {
 	private String clientId;
 	@JsonProperty("redirect_uri")
 	private String redirectUri;
+	@JsonProperty("refresh_token")
+	private String refreshToken = UUID.randomUUID().toString();
 	private String state;
 	@JsonIgnore
 	private String userIdentification;
@@ -77,5 +79,13 @@ public class OauthSession implements Serializable {
 
 	public void setUserIdentification(String userIdentification) {
 		this.userIdentification = userIdentification;
+	}
+
+	public String getRefreshToken() {
+		return refreshToken;
+	}
+
+	public void setRefreshToken(String refreshToken) {
+		this.refreshToken = refreshToken;
 	}
 }

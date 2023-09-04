@@ -8,6 +8,7 @@ import nl.gids.poc.auth.oauth.exception.InvalidOauthRequestException;
 import nl.gids.poc.auth.oauth.service.ClientCredentialValidator;
 import nl.gids.poc.auth.oauth.service.OauthSessionService;
 import nl.gids.poc.auth.oauth.valueobject.IdTokenResponse;
+import nl.gids.poc.auth.oauth.valueobject.OidcTokenResponse;
 import nl.gids.poc.auth.oauth.valueobject.OauthSession;
 import nl.gids.poc.auth.utils.KeyUtils;
 import nl.gids.poc.auth.utils.UrlUtils;
@@ -70,7 +71,7 @@ public class Oauth2Controller {
 
 	@RequestMapping(value = "/token", produces = "application/json", method = RequestMethod.POST)
 	public @ResponseBody
-	IdTokenResponse token(
+    IdTokenResponse token(
 			@RequestParam(value = "code", required = false) String code,
 			@RequestParam(value = "redirect_uri", required = false) String redirectUri,
 			@RequestParam(value = "refresh_token", required = false) String refreshToken,
@@ -91,22 +92,38 @@ public class Oauth2Controller {
 			if (!StringUtils.equals(oauthSession.getRedirectUri(), redirectUri)) {
 				throw new InvalidOauthRequestException("The redirect_uri does not match");
 			}
-			return tokenIdToken(oauthSession, UrlUtils.getBaseUrl(request));
+			if("authorization_code".equals(grantType)) {
+				return getOidcToken(oauthSession, UrlUtils.getBaseUrl(request));
+			} else {
+				return getIdToken(oauthSession, UrlUtils.getBaseUrl(request));
+			}
 		} else if (StringUtils.equals("refresh_token", grantType)) {
 			return tokenRefresh(refreshToken);
 		}
 		throw new InvalidOauthRequestException("Unknown grant_type: " + grantType);
 	}
 
-	private IdTokenResponse tokenIdToken(OauthSession oauthSession, String issuer) {
+	private IdTokenResponse getIdToken(OauthSession oauthSession, String issuer) {
 		IdTokenResponse rv = new IdTokenResponse();
+
 		// Use serverName as issuer.
 		rv.setIdToken(authenticationService.createJwt(oauthSession.getUserIdentification(), oauthSession.getClientId(), issuer));
-		rv.setTokenType("Bearer");
+
 		return rv;
 	}
 
-	private IdTokenResponse tokenRefresh(String refreshToken) {
+	private OidcTokenResponse getOidcToken(OauthSession oauthSession, String issuer) {
+		OidcTokenResponse rv = new OidcTokenResponse();
+
+		// Use serverName as issuer.
+		rv.setIdToken(authenticationService.createJwt(oauthSession.getUserIdentification(), oauthSession.getClientId(), issuer));
+		rv.setAccessToken(authenticationService.createAccessToken(oauthSession, issuer));
+		rv.setRefreshToken(oauthSession.getRefreshToken());
+
+		return rv;
+	}
+
+	private OidcTokenResponse tokenRefresh(String refreshToken) {
 		throw new InvalidOauthRequestException("Refresh token not implemented on id_token flow.");
 	}
 

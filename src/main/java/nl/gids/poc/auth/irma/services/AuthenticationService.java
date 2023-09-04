@@ -4,6 +4,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.annotation.PostConstruct;
 import nl.gids.poc.auth.irma.configuration.ServerConfiguration;
+import nl.gids.poc.auth.oauth.valueobject.OauthSession;
 import nl.gids.poc.auth.utils.KeyUtils;
 import nl.gids.poc.auth.utils.PemUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -18,6 +19,7 @@ import java.security.Signature;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Date;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -75,5 +77,19 @@ public class AuthenticationService {
 
 		Assert.isTrue(signature.verify(signed), "The public and private key do NOT match");
 		LOG.info(String.format("The JWT signing keypair is configured correctly, the public key is:%n%s", PemUtils.formatPublicKey(publicKey)));
+	}
+
+	public String createAccessToken(OauthSession oauthSession, String issuer) {
+		return Jwts.builder().signWith(SignatureAlgorithm.RS256, privateKey)
+				.setHeaderParam("kid", KeyUtils.getFingerPrint(publicKey))
+				.setIssuedAt(new Date())
+				.setExpiration(new Date(System.currentTimeMillis() + TOKEN_EXPIRY))
+				.setIssuer(issuer)
+				.setAudience(oauthSession.getClientId())
+				.setSubject(oauthSession.getUserIdentification())
+				.addClaims(Map.of(
+						"scope", oauthSession.getScope()
+				))
+				.compact();
 	}
 }
