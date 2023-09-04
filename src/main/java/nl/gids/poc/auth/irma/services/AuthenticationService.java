@@ -35,12 +35,15 @@ public class AuthenticationService {
 	@Autowired
 	ServerConfiguration serverConfiguration;
 
-	public String createJwt(String userId, String audience)  {
-		return createJwt(userId, audience, serverConfiguration.getIssuer());
-
+	public String createIdToken(String userId, String audience, String nonce)  {
+		return createIdToken(userId, audience, serverConfiguration.getIssuer(), nonce);
 	}
 
-	public String createJwt(String userId, String audience, String issuer) {
+	public String createIdToken(OauthSession oauthSession, String audience)  {
+		return createIdToken(oauthSession.getUserIdentification(), audience, serverConfiguration.getIssuer(), oauthSession.getNonce());
+	}
+
+	public String createIdToken(String userId, String audience, String issuer, String nonce) {
 		return Jwts.builder().signWith(SignatureAlgorithm.RS256, privateKey)
 				.setHeaderParam("kid", KeyUtils.getFingerPrint(publicKey))
 				.setIssuedAt(new Date())
@@ -48,6 +51,9 @@ public class AuthenticationService {
 				.setIssuer(issuer)
 				.setAudience(audience)
 				.setSubject(userId)
+				.setClaims(Map.of(
+						"nonce", nonce
+				))
 				.compact();
 	}
 

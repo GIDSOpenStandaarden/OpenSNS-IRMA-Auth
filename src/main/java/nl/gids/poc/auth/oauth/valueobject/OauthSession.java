@@ -13,6 +13,7 @@ public class OauthSession implements Serializable {
 	final private String id = UUID.randomUUID().toString();
 	final private String code = UUID.randomUUID().toString();
 	private String scope;
+	private String nonce;
 	@JsonProperty("response_type")
 	private String responseType;
 	@JsonProperty("client_id")
@@ -87,5 +88,13 @@ public class OauthSession implements Serializable {
 
 	public void setRefreshToken(String refreshToken) {
 		this.refreshToken = refreshToken;
+	}
+
+	public String getNonce() {
+		return nonce;
+	}
+
+	public void setNonce(String nonce) {
+		this.nonce = nonce;
 	}
 }

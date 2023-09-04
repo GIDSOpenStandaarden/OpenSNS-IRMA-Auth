@@ -54,7 +54,7 @@ public class SessionController {
 			url = appendToUrl(url, "state", oauthSession.getState());
 			response.url = url;
 		} else if (StringUtils.isNotEmpty(redirectUri)) {
-			response.url = getRedirectUri(userIdentification, redirectUri);
+			response.url = getRedirectUriNoOAuthSession(userIdentification, redirectUri);
 		}
 		return response;
 	}
@@ -68,8 +68,8 @@ public class SessionController {
 		return applicationConfiguration.getDefaultAttribute();
 	}
 
-	private String getRedirectUri(String userIdentification, String redirectUri) {
-		String token = authenticationService.createJwt(userIdentification, redirectUri);
+	private String getRedirectUriNoOAuthSession(String userIdentification, String redirectUri) {
+		String token = authenticationService.createIdToken(userIdentification, redirectUri, null);
 		return appendToUrl(redirectUri, "token", token);
 	}
 

@@ -7,6 +7,7 @@ import nl.gids.poc.auth.irma.services.AuthenticationService;
 import nl.gids.poc.auth.oauth.exception.InvalidOauthRequestException;
 import nl.gids.poc.auth.oauth.service.ClientCredentialValidator;
 import nl.gids.poc.auth.oauth.service.OauthSessionService;
+import nl.gids.poc.auth.oauth.valueobject.BearerTokenType;
 import nl.gids.poc.auth.oauth.valueobject.IdTokenResponse;
 import nl.gids.poc.auth.oauth.valueobject.OidcTokenResponse;
 import nl.gids.poc.auth.oauth.valueobject.OauthSession;
@@ -52,6 +53,7 @@ public class Oauth2Controller {
 							@RequestParam("client_id") String clientId,
 							@RequestParam("redirect_uri") String redirectUri,
 							@RequestParam("state") String state,
+							@RequestParam(value = "nonce", required = false) String nonce,
 							HttpSession httpSession) {
 
 		if (!StringUtils.equals("code", responseType)) {
@@ -61,6 +63,7 @@ public class Oauth2Controller {
 		OauthSession oauthSession = new OauthSession();
 		oauthSession.setResponseType(responseType);
 		oauthSession.setScope(scope);
+		oauthSession.setNonce(nonce);
 		oauthSession.setClientId(clientId);
 		oauthSession.setRedirectUri(redirectUri);
 		oauthSession.setState(state);
@@ -71,7 +74,7 @@ public class Oauth2Controller {
 
 	@RequestMapping(value = "/token", produces = "application/json", method = RequestMethod.POST)
 	public @ResponseBody
-    IdTokenResponse token(
+	BearerTokenType token(
 			@RequestParam(value = "code", required = false) String code,
 			@RequestParam(value = "redirect_uri", required = false) String redirectUri,
 			@RequestParam(value = "refresh_token", required = false) String refreshToken,
@@ -107,7 +110,7 @@ public class Oauth2Controller {
 		IdTokenResponse rv = new IdTokenResponse();
 
 		// Use serverName as issuer.
-		rv.setIdToken(authenticationService.createJwt(oauthSession.getUserIdentification(), oauthSession.getClientId(), issuer));
+		rv.setIdToken(authenticationService.createIdToken(oauthSession, issuer));
 
 		return rv;
 	}
@@ -116,7 +119,7 @@ public class Oauth2Controller {
 		OidcTokenResponse rv = new OidcTokenResponse();
 
 		// Use serverName as issuer.
-		rv.setIdToken(authenticationService.createJwt(oauthSession.getUserIdentification(), oauthSession.getClientId(), issuer));
+		rv.setIdToken(authenticationService.createIdToken(oauthSession, issuer));
 		rv.setAccessToken(authenticationService.createAccessToken(oauthSession, issuer));
 		rv.setRefreshToken(oauthSession.getRefreshToken());
 

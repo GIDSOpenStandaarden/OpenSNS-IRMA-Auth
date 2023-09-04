@@ -2,14 +2,14 @@ package nl.gids.poc.auth.oauth.valueobject;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.UUID;
+
 /**
  *
  */
-public class IdTokenResponse {
+public class IdTokenResponse extends BearerTokenType {
 	@JsonProperty("id_token")
 	String idToken;
-	@JsonProperty("token_type")
-	String tokenType = "Bearer";
 
 	public String getIdToken() {
 		return idToken;
@@ -19,11 +19,4 @@ public class IdTokenResponse {
 		this.idToken = idToken;
 	}
 
-	public String getTokenType() {
-		return tokenType;
-	}
-
-	public void setTokenType(String tokenType) {
-		this.tokenType = tokenType;
-	}
 }
