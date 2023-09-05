@@ -98,7 +98,7 @@ public class Oauth2Controller {
 			if("authorization_code".equals(grantType)) {
 				return getOidcToken(oauthSession, UrlUtils.getBaseUrl(request));
 			} else {
-				return getIdToken(oauthSession, UrlUtils.getBaseUrl(request));
+				return getIdToken(oauthSession);
 			}
 		} else if (StringUtils.equals("refresh_token", grantType)) {
 			return tokenRefresh(refreshToken);
@@ -106,7 +106,7 @@ public class Oauth2Controller {
 		throw new InvalidOauthRequestException("Unknown grant_type: " + grantType);
 	}
 
-	private IdTokenResponse getIdToken(OauthSession oauthSession, String issuer) {
+	private IdTokenResponse getIdToken(OauthSession oauthSession) {
 		IdTokenResponse rv = new IdTokenResponse();
 
 		rv.setIdToken(authenticationService.createIdToken(oauthSession));
@@ -117,7 +117,6 @@ public class Oauth2Controller {
 	private OidcTokenResponse getOidcToken(OauthSession oauthSession, String audience) {
 		OidcTokenResponse rv = new OidcTokenResponse();
 
-		// Use serverName as issuer.
 		rv.setIdToken(authenticationService.createIdToken(oauthSession));
 		rv.setAccessToken(authenticationService.createAccessToken(oauthSession, audience));
 		rv.setRefreshToken(oauthSession.getRefreshToken());
