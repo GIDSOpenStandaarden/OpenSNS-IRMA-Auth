@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html  xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8"/>
     <title>GIDS YIVI authenticator</title>
@@ -13,24 +13,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <style>
         #form-container {
+            margin-top: 20px;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        #set-attribute-section {
+            text-align: left;
             display: flex;
             justify-content: center;
+            align-items: center;
+            flex-direction: column;
         }
     </style>
 </head>
 <body class="light-blue lighten-5">
 <div class="container">
-    <header>
-        <div class="row">
-            <div class="col s12 m10 offset-m1">
-                <h1 class="center">
-                    Authenticate with YIVI
-                </h1>
-            </div>
-        </div>
-    </header>
     <div id="form-container">
-        <section class="center" id="yivi-web-form"></section>
+        <section id="yivi-web-form"></section>
+
+        <section th:if="${registerUrl != null}" id="set-attribute-section">
+            <blockquote>
+                Is dit attribuut nog niet toegevoegd aan jouw Yivi App?
+            </blockquote>
+            <a th:href="@{${registerUrl}}" target="_blank" class="btn waves-effect waves-light red lighten-1" type="submit">Voeg toe!
+                <i class="material-icons right">open_in_new</i>
+            </a>
+        </section>
     </div>
 </div>
 <script
@@ -39,7 +50,7 @@
   crossorigin="anonymous"></script>
 <script type="text/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-<script src="js/yivi.js"></script>
+<script src="/js/yivi.js"></script>
 <script type="text/javascript">
   $(document).ready(function () {
 
