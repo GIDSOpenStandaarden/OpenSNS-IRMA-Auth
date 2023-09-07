@@ -69,7 +69,9 @@ public class Oauth2Controller {
 		oauthSession.setState(state);
 		oauthSessionService.store(oauthSession);
 		httpSession.setAttribute("oauthSession", oauthSession.getId());
-		return "redirect:/yivi.html";
+
+		httpSession.setAttribute("redirectUri", redirectUri);
+		return "yivi";
 	}
 
 	@RequestMapping(value = "/token", produces = "application/json", method = RequestMethod.POST)
