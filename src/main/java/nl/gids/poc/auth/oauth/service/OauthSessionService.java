@@ -13,6 +13,7 @@ import java.util.Map;
 public class OauthSessionService {
 	private final Map<String, OauthSession> STORE_ID = new HashMap<>();
 	private final Map<String, OauthSession> STORE_CODE = new HashMap<>();
+	private final Map<String, OauthSession> STORE_REFRESH_TOKEN = new HashMap<>();
 
 	public OauthSession retrieveById(String id) {
 		return STORE_ID.get(id);
@@ -22,8 +23,13 @@ public class OauthSessionService {
 		return STORE_CODE.get(code);
 	}
 
+	public OauthSession consumeRefreshToken(String refreshToken) {
+		return STORE_REFRESH_TOKEN.remove(refreshToken);
+	}
+
 	public void store(OauthSession oauthSession) {
 		STORE_ID.put(oauthSession.getId(), oauthSession);
 		STORE_CODE.put(oauthSession.getCode(), oauthSession);
+		STORE_REFRESH_TOKEN.put(oauthSession.getRefreshToken(), oauthSession);
 	}
 }

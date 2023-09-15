@@ -1,9 +1,13 @@
 package nl.gids.poc.auth.oauth.controller;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import nl.gids.poc.auth.irma.configuration.ApplicationConfiguration;
 import nl.gids.poc.auth.irma.configuration.ServerConfiguration;
+import nl.gids.poc.auth.irma.exception.ValidationException;
 import nl.gids.poc.auth.irma.services.AuthenticationService;
 import nl.gids.poc.auth.oauth.exception.InvalidOauthRequestException;
 import nl.gids.poc.auth.oauth.service.ClientCredentialValidator;
@@ -139,13 +143,45 @@ public class Oauth2Controller {
 
 		rv.setIdToken(authenticationService.createIdToken(oauthSession));
 		rv.setAccessToken(authenticationService.createAccessToken(oauthSession, audience));
-		rv.setRefreshToken(oauthSession.getRefreshToken());
+
+		String refreshToken = authenticationService.createRefreshToken(oauthSession, audience);
+		rv.setRefreshToken(refreshToken);
+
+		oauthSession.setRefreshToken(refreshToken);
+		oauthSessionService.store(oauthSession);
 
 		return rv;
 	}
 
 	private OidcTokenResponse tokenRefresh(String refreshToken) {
-		throw new InvalidOauthRequestException("Refresh token not implemented on id_token flow.");
+
+		LOG.info("Received refresh token request");
+
+		if(StringUtils.isBlank(refreshToken)) {
+			throw new ValidationException("Invalid refresh_token");
+		}
+
+		OauthSession oauthSession = oauthSessionService.consumeRefreshToken(refreshToken);
+		if(oauthSession == null) {
+			LOG.info("Refresh token not found");
+			throw new ValidationException(); // Not providing any information to the client
+		}
+
+		LOG.info("Found refresh token");
+
+		try {
+			Claims claims = Jwts.parser()
+					.setSigningKey(serverConfiguration.getJwtPrivateKey())
+					.parseClaimsJws(refreshToken)
+					.getBody();
+
+			LOG.info("Refresh token is valid, renewing access_token, id_token and refresh_token");
+
+			return getOidcToken(oauthSession, claims.getAudience());
+		} catch(ExpiredJwtException e) {
+			// refresh token expired
+			throw new ValidationException(); // Not providing any information to the client
+		}
 	}
 
 	private boolean validateAuthorization(String authorization, String clientId) throws IOException, GeneralSecurityException {

@@ -29,7 +29,9 @@ import java.util.concurrent.ThreadLocalRandom;
 public class AuthenticationService {
 
 	private static final Log LOG = LogFactory.getLog(AuthenticationService.class);
-	public static final int TOKEN_EXPIRY = 60 * 60 * 1000; // 1 Hour
+//	public static final int TOKEN_EXPIRY = 60 * 60 * 1000; // 1 Hour
+	public static final int TOKEN_EXPIRY = 60 * 1000; // 1 minute
+	public static final int REFRESH_TOKEN_EXPIRY = 60 * 60 * 2000; // 2 Hours
 	protected RSAPublicKey publicKey;
 	protected RSAPrivateKey privateKey;
 	@Autowired
@@ -96,6 +98,17 @@ public class AuthenticationService {
 				.addClaims(Map.of(
 						"scope", oauthSession.getScope()
 				))
+				.compact();
+	}
+
+	public String createRefreshToken(OauthSession oauthSession, String audience) {
+		return Jwts.builder().signWith(SignatureAlgorithm.RS256, privateKey)
+				.setHeaderParam("kid", KeyUtils.getFingerPrint(publicKey))
+				.setIssuedAt(new Date())
+				.setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRY))
+				.setIssuer(serverConfiguration.getIssuer())
+				.setAudience(audience)
+				.setSubject(oauthSession.getUserIdentification())
 				.compact();
 	}
 }
