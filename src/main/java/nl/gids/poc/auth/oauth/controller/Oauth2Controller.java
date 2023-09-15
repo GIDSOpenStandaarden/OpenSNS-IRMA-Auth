@@ -2,6 +2,7 @@ package nl.gids.poc.auth.oauth.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import nl.gids.poc.auth.irma.configuration.ApplicationConfiguration;
 import nl.gids.poc.auth.irma.configuration.ServerConfiguration;
 import nl.gids.poc.auth.irma.services.AuthenticationService;
 import nl.gids.poc.auth.oauth.exception.InvalidOauthRequestException;
@@ -39,12 +40,14 @@ public class Oauth2Controller {
 	final AuthenticationService authenticationService;
 	final ClientCredentialValidator clientCredentialValidator;
 	final ServerConfiguration serverConfiguration;
+	final ApplicationConfiguration applicationConfiguration;
 
-	public Oauth2Controller(OauthSessionService oauthSessionService, AuthenticationService authenticationService, ClientCredentialValidator clientCredentialValidator, ServerConfiguration serverConfiguration) {
+	public Oauth2Controller(OauthSessionService oauthSessionService, AuthenticationService authenticationService, ClientCredentialValidator clientCredentialValidator, ServerConfiguration serverConfiguration, ApplicationConfiguration applicationConfiguration) {
 		this.oauthSessionService = oauthSessionService;
 		this.authenticationService = authenticationService;
 		this.clientCredentialValidator = clientCredentialValidator;
 		this.serverConfiguration = serverConfiguration;
+		this.applicationConfiguration = applicationConfiguration;
 	}
 
 	@RequestMapping("/authorize")
@@ -54,6 +57,7 @@ public class Oauth2Controller {
 							@RequestParam("redirect_uri") String redirectUri,
 							@RequestParam("state") String state,
 							@RequestParam(value = "nonce", required = false) String nonce,
+							@RequestParam(value = "yivi_attribute", required = false) String yiviAttribute,
 							HttpSession httpSession) {
 
 		if (!StringUtils.equals("code", responseType)) {
@@ -71,6 +75,12 @@ public class Oauth2Controller {
 		httpSession.setAttribute("oauthSession", oauthSession.getId());
 
 		httpSession.setAttribute("redirectUri", redirectUri);
+
+		if (StringUtils.isEmpty(yiviAttribute)) {
+			yiviAttribute = applicationConfiguration.getDefaultAttribute();
+		}
+		httpSession.setAttribute("attribute", yiviAttribute);
+
 		return "yivi";
 	}
 
