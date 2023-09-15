@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -58,6 +59,7 @@ public class Oauth2Controller {
 							@RequestParam("state") String state,
 							@RequestParam(value = "nonce", required = false) String nonce,
 							@RequestParam(value = "yivi_attribute", required = false) String yiviAttribute,
+							Model model,
 							HttpSession httpSession) {
 
 		if (!StringUtils.equals("code", responseType)) {
@@ -79,6 +81,12 @@ public class Oauth2Controller {
 		if (StringUtils.isEmpty(yiviAttribute)) {
 			yiviAttribute = applicationConfiguration.getDefaultAttribute();
 		}
+		//TODO: This is temporary code, can be removed after SIDN adds this login into the Yivi app. Can be configured
+		// if this is a more regular use-case
+		else if("pbdf.sidn-pbdf.uniqueid.uniqueid".equals(yiviAttribute)) {
+			model.addAttribute("registerUrl", "https://middleware.vkn.gidsopenstandaarden.org/irma_put.html");
+		}
+
 		httpSession.setAttribute("attribute", yiviAttribute);
 
 		return "yivi";
