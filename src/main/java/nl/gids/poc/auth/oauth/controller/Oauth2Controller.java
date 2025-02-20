@@ -26,6 +26,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.Base64;
 import java.util.regex.Matcher;
@@ -192,7 +194,16 @@ public class Oauth2Controller {
 			if (matcher.matches()) {
 				String userName = matcher.group(1);
 				String password = matcher.group(2);
-				return clientCredentialValidator.validate(clientId, userName, password, KeyUtils.getPublicKey(serverConfiguration.getJwtPublicKey()));
+				boolean validate = clientCredentialValidator.validate(clientId, userName, password, KeyUtils.getPublicKey(serverConfiguration.getJwtPublicKey()));
+				if (!validate) {
+					try {
+						password = URLDecoder.decode(password, StandardCharsets.UTF_8);
+						validate = clientCredentialValidator.validate(clientId, userName, password, KeyUtils.getPublicKey(serverConfiguration.getJwtPublicKey()));
+					} catch (RuntimeException e) {
+						LOG.error("Failed to URL decode password", e);
+					}
+				}
+				return validate;
 			}
 		}
 		return false;
